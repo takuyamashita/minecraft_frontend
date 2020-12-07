@@ -1,0 +1,31 @@
+services:
+  react:
+    container_name: react
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./react:/usr/src/app:delegated
+      - node_modules:/usr/src/app/minecraft_app/node_modules
+    command:
+      sh -c "cd minecraft_app && HTTPS=true yarn start"
+    ports:
+      - "8080:3000"
+      - "443:3000"
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    networks: 
+      app_net:
+        ipv4_address: 172.16.0.20
+
+volumes:
+  node_modules:
+
+networks: 
+  app_net:
+    driver: bridge
+    ipam: 
+      driver: default
+      config: 
+        - subnet: 172.16.0.0/16
